@@ -1,22 +1,18 @@
 package net.camotoy.bedrockskinutility.client;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import net.camotoy.bedrockskinutility.client.data.CustomCapeData;
+import net.camotoy.bedrockskinutility.client.data.CustomModelData;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 public class SkinManager {
     private static SkinManager instance;
 
-    /**
-     * If a player cannot be found, then stuff the UUID in here until they spawn.
-     */
-    private final Cache<UUID, BedrockCachedProperties> cachedPlayers = CacheBuilder.newBuilder()
-            .expireAfterAccess(15, TimeUnit.SECONDS)
-            .build();
+    private final Map<UUID, CustomModelData> modelData = new HashMap<>();
+    private final Map<UUID, CustomCapeData> capeData = new HashMap<>();
 
     private final Map<UUID, SkinInfo> skinInfo = new ConcurrentHashMap<>();
 
@@ -24,15 +20,20 @@ public class SkinManager {
         instance = this;
     }
 
-    public Cache<UUID, BedrockCachedProperties> getCachedPlayers() {
-        return cachedPlayers;
-    }
-
     public Map<UUID, SkinInfo> getSkinInfo() {
         return skinInfo;
+    }
+
+    public Map<UUID, CustomModelData> getModelData() {
+        return modelData;
+    }
+
+    public Map<UUID, CustomCapeData> getCapeData() {
+        return capeData;
     }
 
     public static SkinManager getInstance() {
         return instance;
     }
+
 }

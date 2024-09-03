@@ -10,6 +10,21 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+configurations {
+    implementation.extendsFrom lib
+    api.extendsFrom lib
+}
+
+repositories {
+    maven {
+        url = uri("https://maven.pkg.github.com/oryxel/cubeconverter")
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+        }
+    }
+}
+
 dependencies {
     //to change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -19,8 +34,7 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
-    // You may need to force-disable transitiveness on them.
+    lib "org.oryxel.cube:cubeconverter:1.0.5-build2"
 }
 
 processResources {
@@ -47,6 +61,14 @@ java {
 
 jar {
     from "LICENSE"
+
+    dependsOn configurations.lib
+    from {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        configurations.lib.collect {
+            zipTree(it)
+        }
+    }
 }
 
 // configure the maven publication

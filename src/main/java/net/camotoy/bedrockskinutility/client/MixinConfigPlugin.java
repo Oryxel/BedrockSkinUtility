@@ -23,7 +23,8 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (mixinClassName.equals("net.camotoy.bedrockskinutility.client.mixin.CapeFeatureRendererMixin")) {
+        if (mixinClassName.equals("net.camotoy.bedrockskinutility.client.mixin.CapeFeatureRendererMixin") ||
+                mixinClassName.equalsIgnoreCase("net.camotoy.bedrockskinutility.client.mixin.AbstractClientPlayer")) {
             boolean capes = FabricLoader.getInstance().getModContainer("capes").isPresent()
                     || FabricLoader.getInstance().getModContainer("cosmetica").isPresent();
             if (capes) {

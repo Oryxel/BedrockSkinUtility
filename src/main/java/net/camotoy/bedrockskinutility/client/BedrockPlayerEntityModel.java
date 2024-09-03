@@ -5,7 +5,9 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.LivingEntity;
 
 public class BedrockPlayerEntityModel<T extends LivingEntity> extends PlayerModel<T> {
-    public BedrockPlayerEntityModel(ModelPart root) {
-        super(root, false);
+
+    public BedrockPlayerEntityModel(ModelPart root, boolean slim) {
+        super(root, slim);
     }
+
 }

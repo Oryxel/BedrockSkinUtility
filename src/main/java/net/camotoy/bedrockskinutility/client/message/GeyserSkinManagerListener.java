@@ -1,10 +1,10 @@
-package net.camotoy.bedrockskinutility.client.pluginmessage;
+package net.camotoy.bedrockskinutility.client.message;
 
 import net.camotoy.bedrockskinutility.client.BedrockSkinPluginMessageType;
-import net.camotoy.bedrockskinutility.client.pluginmessage.data.BaseSkinInfo;
-import net.camotoy.bedrockskinutility.client.pluginmessage.data.BedrockData;
-import net.camotoy.bedrockskinutility.client.pluginmessage.data.CapeData;
-import net.camotoy.bedrockskinutility.client.pluginmessage.data.SkinData;
+import net.camotoy.bedrockskinutility.client.message.data.BaseSkinInfo;
+import net.camotoy.bedrockskinutility.client.message.data.BedrockData;
+import net.camotoy.bedrockskinutility.client.message.data.CapeData;
+import net.camotoy.bedrockskinutility.client.message.data.SkinData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
