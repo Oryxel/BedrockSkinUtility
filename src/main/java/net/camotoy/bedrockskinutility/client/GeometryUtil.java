@@ -114,7 +114,6 @@ public class GeometryUtil {
             return null;
 
         ensureAvailable(root.children, "ear");
-        ensureAvailable(root.children, "cloak");
         root.children.computeIfAbsent("cloak", (string) -> // Required to allow a cape to render
                 HumanoidModel.createMesh(CubeDeformation.NONE, 0.0F).getRoot().addOrReplaceChild(string,
                         CubeListBuilder.create()
@@ -129,6 +128,7 @@ public class GeometryUtil {
 
         // Just to be safe, some model seems to have only head, arm, etc. I mean...
         ensureAvailable(root.children, "hat");
+        ensureAvailable(root.children, "body");
         ensureAvailable(root.children, "left_arm");
         ensureAvailable(root.children, "right_arm");
         ensureAvailable(root.children, "left_leg");

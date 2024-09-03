@@ -10,7 +10,8 @@
     "PlayerRendererMixin",
 
     "EntityMixin",
-    "AbstractClientPlayerMixin"
+    "AbstractClientPlayerMixin",
+    "ConnectionMixin"
   ],
   "plugin": "net.camotoy.bedrockskinutility.client.MixinConfigPlugin",
   "injectors": {
