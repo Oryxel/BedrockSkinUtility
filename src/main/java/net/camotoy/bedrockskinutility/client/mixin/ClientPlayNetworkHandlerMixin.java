@@ -65,18 +65,19 @@ public abstract class ClientPlayNetworkHandlerMixin implements ClientGamePacketL
     public void bedrockskinutility$onPlayerRemove(ClientboundPlayerInfoRemovePacket packet, CallbackInfo ci) {
         for (UUID uuid : packet.profileIds()) {
             PlayerInfo playerListEntry = this.playerInfoMap.get(uuid);
-            if (playerListEntry != null) {
-                final PlayerSkin playerSkin = playerListEntry.getSkin();
-                BedrockPlayerSkin bedrockSkin = (BedrockPlayerSkin) (Object) playerSkin;
-                ResourceLocation skinIdentifier = bedrockSkin.bedrockskinutility$bedrockSkin() ? playerSkin.texture() : null;
-                ResourceLocation capeIdentifier = bedrockSkin.bedrockskinutility$bedrockCape() ? playerSkin.capeTexture() : null;
-                if (skinIdentifier != null || capeIdentifier != null) {
-                    BedrockCachedProperties properties = new BedrockCachedProperties();
-                    properties.skin = skinIdentifier;
-                    properties.model = ((BedrockPlayerInfo) playerListEntry).bedrockskinutility$getModel();
-                    properties.cape = capeIdentifier;
-                    SkinManager.getInstance().getCachedPlayers().put(uuid, properties);
-                }
+            if (playerListEntry == null)
+                continue;
+
+            final PlayerSkin playerSkin = playerListEntry.getSkin();
+            BedrockPlayerSkin bedrockSkin = (BedrockPlayerSkin) (Object) playerSkin;
+            ResourceLocation skinIdentifier = bedrockSkin.bedrockskinutility$bedrockSkin() ? playerSkin.texture() : null;
+            ResourceLocation capeIdentifier = bedrockSkin.bedrockskinutility$bedrockCape() ? playerSkin.capeTexture() : null;
+            if (skinIdentifier != null || capeIdentifier != null) {
+                BedrockCachedProperties properties = new BedrockCachedProperties();
+                properties.skin = skinIdentifier;
+                properties.model = ((BedrockPlayerInfo) playerListEntry).bedrockskinutility$getModel();
+                properties.cape = capeIdentifier;
+                SkinManager.getInstance().getCachedPlayers().put(uuid, properties);
             }
         }
     }

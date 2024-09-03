@@ -10,6 +10,11 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+configurations {
+    implementation.extendsFrom lib
+    api.extendsFrom lib
+}
+
 dependencies {
     //to change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -19,8 +24,7 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    // PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
-    // You may need to force-disable transitiveness on them.
+    lib(files("libs/cubeconverter-1.0.5-build2.jar"))
 }
 
 processResources {
@@ -30,6 +34,8 @@ processResources {
         expand "version": project.version
     }
 }
+
+
 
 // ensure that the encoding is set to UTF-8, no matter what the system default is
 // this fixes some edge cases with special characters not displaying correctly
@@ -46,6 +52,14 @@ java {
 }
 
 jar {
+    dependsOn configurations.lib
+    from {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        configurations.lib.collect {
+            zipTree(it)
+        }
+    }
+
     from "LICENSE"
 }
 
@@ -61,11 +75,5 @@ publishing {
                 builtBy remapSourcesJar
             }
         }
-    }
-
-    // select the repositories you want to publish to
-    repositories {
-        // uncomment to publish to the local maven
-        // mavenLocal()
     }
 }

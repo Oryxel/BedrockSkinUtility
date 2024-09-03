@@ -11,7 +11,8 @@
     "PlayerEntityRendererChangeModel",
     "PlayerInfoMixin",
     "PlayerSkinFieldAccessor",
-    "PlayerSkinMixin"
+    "PlayerSkinMixin",
+    "PlayerRendererMixin"
   ],
   "plugin": "net.camotoy.bedrockskinutility.client.MixinConfigPlugin",
   "injectors": {

@@ -8,6 +8,7 @@ import net.camotoy.bedrockskinutility.client.mixin.PlayerSkinFieldAccessor;
 import net.camotoy.bedrockskinutility.client.pluginmessage.data.BaseSkinInfo;
 import net.camotoy.bedrockskinutility.client.pluginmessage.data.CapeData;
 import net.camotoy.bedrockskinutility.client.pluginmessage.data.SkinData;
+import net.camotoy.bedrockskinutility.client.skin.CustomModelSkin;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -66,11 +67,16 @@ public final class BedrockMessageHandler {
     }
 
     public void handle(BaseSkinInfo payload) {
-        skinManager.getSkinInfo().put(payload.playerUuid(), new SkinInfo(payload.skinWidth(), payload.skinHeight(), payload.jsonGeometry(),
-                payload.jsonGeometryName(), payload.chunkCount()));
+        if (payload == null)
+            return;
+
+        skinManager.getSkinInfo().put(payload.playerUuid(), new SkinInfo(payload.skinWidth(), payload.skinHeight(), payload.geometry(), payload.chunkCount()));
     }
 
     public void handle(SkinData payload, ClientPlayNetworking.Context context) {
+        if (payload == null)
+            return;
+
         SkinInfo info = skinManager.getSkinInfo().get(payload.playerUuid());
         if (info == null) {
             this.logger.error("Skin info was null!!!");
@@ -88,24 +94,22 @@ public final class BedrockMessageHandler {
 
         NativeImage skinImage = toNativeImage(info.getData(), info.getWidth(), info.getHeight());
         PlayerRenderer renderer;
-        boolean setModel = info.getGeometry() != null;
+        boolean setModel = info.getGeometryRaw() != null && !info.getGeometryRaw().isEmpty();
 
         Minecraft client = context.client();
-        if (setModel) {
-            // Convert Bedrock JSON geometry into a class format that Java understands
-            BedrockPlayerEntityModel<AbstractClientPlayer> model = GeometryUtil.bedrockGeoToJava(info);
-            if (model != null) {
-                EntityRendererProvider.Context entityContext = new EntityRendererProvider.Context(client.getEntityRenderDispatcher(),
-                        client.getItemRenderer(), client.getBlockRenderer(), client.getEntityRenderDispatcher().getItemInHandRenderer(),
-                        client.getResourceManager(), client.getEntityModels(), client.font);
-                renderer = new PlayerRenderer(entityContext, false);
-                ((PlayerEntityRendererChangeModel) renderer).bedrockskinutility$setModel(model);
-            } else {
-                renderer = null;
-            }
-        } else {
-            renderer = null;
-        }
+        // Convert Bedrock JSON geometry into a class format that Java understands
+        BedrockPlayerEntityModel<AbstractClientPlayer> model = GeometryUtil.bedrockGeoToJava(info);
+        if (setModel && model != null) {
+            EntityRendererProvider.Context entityContext = new EntityRendererProvider.Context(client.getEntityRenderDispatcher(),
+                    client.getItemRenderer(), client.getBlockRenderer(), client.getEntityRenderDispatcher().getItemInHandRenderer(),
+                    client.getResourceManager(), client.getEntityModels(), client.font);
+            renderer = new PlayerRenderer(entityContext, model.isSlim());
+
+            CustomModelSkin custom = new CustomModelSkin(renderer, client.getTextureManager().register(payload.playerUuid().toString(), new DynamicTexture(skinImage)));
+            SkinManager.getInstance().getModelMap().put(payload.playerUuid(), custom);
+
+            ((PlayerEntityRendererChangeModel) renderer).bedrockskinutility$setModel(model);
+        } else renderer = null;
 
         ResourceLocation identifier = ResourceLocation.fromNamespaceAndPath("geyserskinmanager", payload.playerUuid().toString());
         client.submit(() -> {

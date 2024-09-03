@@ -2,7 +2,9 @@ package net.camotoy.bedrockskinutility.client;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import net.camotoy.bedrockskinutility.client.skin.CustomModelSkin;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +20,8 @@ public class SkinManager {
             .expireAfterAccess(15, TimeUnit.SECONDS)
             .build();
 
+    private final Map<UUID, CustomModelSkin> modelMap = new HashMap<>();
+
     private final Map<UUID, SkinInfo> skinInfo = new ConcurrentHashMap<>();
 
     public SkinManager() {
@@ -32,7 +36,12 @@ public class SkinManager {
         return skinInfo;
     }
 
+    public Map<UUID, CustomModelSkin> getModelMap() {
+        return modelMap;
+    }
+
     public static SkinManager getInstance() {
         return instance;
     }
+
 }

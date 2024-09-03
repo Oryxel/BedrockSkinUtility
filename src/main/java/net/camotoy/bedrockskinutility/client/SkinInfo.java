@@ -1,20 +1,15 @@
 package net.camotoy.bedrockskinutility.client;
 
-import com.google.gson.JsonObject;
-import org.jetbrains.annotations.Nullable;
-
 public class SkinInfo {
     private final int width;
     private final int height;
-    private final JsonObject geometry;
-    private final JsonObject geometryName;
+    private final String geometryRaw;
     private final byte[][] skinData;
 
-    public SkinInfo(int width, int height, JsonObject geometry, JsonObject geometryName, int chunkCount) {
+    public SkinInfo(int width, int height, String geometryRaw, int chunkCount) {
         this.width = width;
         this.height = height;
-        this.geometry = geometry;
-        this.geometryName = geometryName;
+        this.geometryRaw = geometryRaw;
         this.skinData = new byte[chunkCount][];
     }
 
@@ -26,14 +21,8 @@ public class SkinInfo {
         return height;
     }
 
-    @Nullable
-    public JsonObject getGeometry() {
-        return geometry;
-    }
-
-    @Nullable
-    public JsonObject getGeometryName() {
-        return geometryName;
+    public String getGeometryRaw() {
+        return geometryRaw;
     }
 
     /**

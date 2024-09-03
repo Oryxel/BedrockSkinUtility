@@ -1,6 +1,8 @@
 package net.camotoy.bedrockskinutility.client.mixin;
 
+import net.camotoy.bedrockskinutility.client.SkinManager;
 import net.camotoy.bedrockskinutility.client.interfaces.BedrockPlayerInfo;
+import net.camotoy.bedrockskinutility.client.skin.CustomModelSkin;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -22,11 +24,17 @@ public abstract class EntityRendererDispatcherMixin {
     )
     public void getRenderer(Entity entity, CallbackInfoReturnable<EntityRenderer<?>> cir) {
         PlayerInfo playerListEntry = ((BedrockAbstractClientPlayerEntity) entity).bedrockskinutility$getPlayerListEntry();
+        PlayerRenderer renderer = null;
         if (playerListEntry != null) {
-            PlayerRenderer renderer = ((BedrockPlayerInfo) playerListEntry).bedrockskinutility$getModel();
-            if (renderer != null) {
-                cir.setReturnValue(renderer);
-            }
+            renderer = ((BedrockPlayerInfo) playerListEntry).bedrockskinutility$getModel();
+        } else {
+            CustomModelSkin skin = SkinManager.getInstance().getModelMap().get(entity.getUUID());
+            if (skin != null)
+                renderer = skin.renderer();
+        }
+
+        if (renderer != null) {
+            cir.setReturnValue(renderer);
         }
     }
 }
