@@ -1,7 +1,7 @@
-package net.camotoy.bedrockskinutility.client.pluginmessage.data;
+package net.camotoy.bedrockskinutility.client.message.data;
 
-import net.camotoy.bedrockskinutility.client.pluginmessage.BedrockMessageHandler;
-import net.camotoy.bedrockskinutility.client.pluginmessage.GeyserSkinManagerListener;
+import net.camotoy.bedrockskinutility.client.message.BedrockMessageHandler;
+import net.camotoy.bedrockskinutility.client.message.GeyserSkinManagerListener;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;

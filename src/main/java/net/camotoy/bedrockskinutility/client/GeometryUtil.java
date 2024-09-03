@@ -27,8 +27,16 @@ public class GeometryUtil {
         if (info.getGeometryRaw() == null || info.getGeometryRaw().isEmpty())
             return null;
 
-        BedrockGeometry geometry = BedrockGeometrySerializer.deserialize(info.getGeometryRaw());
-        if (geometry == null) // This is poly_mesh
+        BedrockGeometry geometry = null;
+
+        try {
+            geometry = BedrockGeometrySerializer.deserialize(info.getGeometryRaw());
+        } catch (Exception e) {
+            // e.printStackTrace();
+            return null;
+        }
+
+        if (geometry == null)
             return null;
 
         int uvHeight = geometry.textureHeight();
@@ -126,10 +134,7 @@ public class GeometryUtil {
         ensureAvailable(root.children, "left_leg");
         ensureAvailable(root.children, "right_leg");
 
-        boolean slim = geometry.identifier().equalsIgnoreCase("geometry.humanoid.customSlim");
-
-        // Create base model
-        return new BedrockPlayerEntityModel<>(root.part, slim);
+        return new BedrockPlayerEntityModel<>(root.part, false);
     }
 
     private static String adjustFormatting(String name) {
