@@ -34,7 +34,7 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    lib "org.oryxel.cube:cubeconverter:1.0.5-build2"
+    lib "org.oryxel.cube:cubeconverter:1.0.5-build4"
 }
 
 processResources {
