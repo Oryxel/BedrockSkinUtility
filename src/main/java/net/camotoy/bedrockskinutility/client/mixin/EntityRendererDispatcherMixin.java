@@ -21,7 +21,8 @@ public abstract class EntityRendererDispatcherMixin {
     )
     public void getRenderer(Entity entity, CallbackInfoReturnable<EntityRenderer<?>> cir) {
         CustomModelData skin = SkinManager.getInstance().getModelData().get(entity.getUUID());
-        if (skin != null)
+        if (skin != null) {
             cir.setReturnValue(skin.renderer());
+        }
     }
 }

@@ -2,7 +2,6 @@ package net.camotoy.bedrockskinutility.client.message;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import net.camotoy.bedrockskinutility.client.*;
-import net.camotoy.bedrockskinutility.client.data.CustomCapeData;
 import net.camotoy.bedrockskinutility.client.mixin.PlayerEntityRendererChangeModel;
 import net.camotoy.bedrockskinutility.client.message.data.BaseSkinInfo;
 import net.camotoy.bedrockskinutility.client.message.data.CapeData;
@@ -33,7 +32,7 @@ public final class BedrockMessageHandler {
         NativeImage capeImage = toNativeImage(payload.capeData(), payload.width(), payload.height());
 
         context.client().getTextureManager().register(payload.identifier(), new DynamicTexture(capeImage));
-        this.skinManager.getCapeData().put(payload.playerUuid(), new CustomCapeData(payload.identifier()));
+        this.skinManager.getCapeData().put(payload.playerUuid(), payload.identifier());
     }
 
     public void handle(BaseSkinInfo payload) {

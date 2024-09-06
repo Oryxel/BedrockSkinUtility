@@ -18,10 +18,9 @@ public class PlayerRendererMixin {
     )
     public void getTextureLocation(AbstractClientPlayer abstractClientPlayer, CallbackInfoReturnable<ResourceLocation> cir) {
         CustomModelData modelSkin = SkinManager.getInstance().getModelData().get(abstractClientPlayer.getUUID());
-        if (modelSkin == null)
-            return;
-
-        cir.setReturnValue(modelSkin.location());
+        if (modelSkin != null) {
+            cir.setReturnValue(modelSkin.location());
+        }
     }
 
 }

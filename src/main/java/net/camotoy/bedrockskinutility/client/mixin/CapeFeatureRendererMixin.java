@@ -16,7 +16,7 @@ public class CapeFeatureRendererMixin {
     @Redirect(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/player/AbstractClientPlayer;FFFFFF)V",
                 at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/AbstractClientPlayer;isModelPartShown(Lnet/minecraft/world/entity/player/PlayerModelPart;)Z"))
     public boolean isModelPartShown(AbstractClientPlayer instance, PlayerModelPart playerModelPart) {
-        return SkinManager.getInstance().getCapeData().get(instance.getUUID()) != null;
+        return SkinManager.getInstance().getCapeData().containsKey(instance.getUUID());
     }
 
     @Redirect(
