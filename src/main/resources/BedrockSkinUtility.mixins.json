@@ -8,7 +8,6 @@
     "EntityRendererDispatcherMixin",
     "PlayerEntityRendererChangeModel",
     "PlayerRendererMixin",
-    "EntityMixin",
     "AbstractClientPlayerMixin",
     "ConnectionMixin"
   ],
