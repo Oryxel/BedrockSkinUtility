@@ -17,10 +17,11 @@ configurations {
 
 repositories {
     maven {
-        url = uri("https://maven.pkg.github.com/oryxel/cubeconverter")
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+        name = "Jitpack"
+        url = "https://jitpack.io"
+
+        content {
+            includeGroup "com.github.Oryxel"
         }
     }
 }
@@ -34,7 +35,9 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    lib "org.oryxel.cube:cubeconverter:1.0.5-build4"
+    lib("com.github.Oryxel:CubeConverter:51ab0d343fc2b17293e5868ef8baa85bbfdc330f") {
+        transitive = false
+    }
 }
 
 processResources {

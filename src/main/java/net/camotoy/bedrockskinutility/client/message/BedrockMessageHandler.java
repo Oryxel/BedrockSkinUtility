@@ -36,52 +36,53 @@ public final class BedrockMessageHandler {
     }
 
     public void handle(BaseSkinInfo payload) {
-        if (payload == null)
-            return;
-
-        skinManager.getSkinInfo().put(payload.playerUuid(), new SkinInfo(payload.skinWidth(), payload.skinHeight(), payload.geometry(), payload.chunkCount()));
+        if (payload != null) {
+            skinManager.getSkinInfo().put(payload.playerUuid(), new SkinInfo(payload.skinWidth(), payload.skinHeight(), payload.geometry(), payload.chunkCount()));
+        }
     }
 
     public void handle(SkinData payload, ClientPlayNetworking.Context context) {
-        if (payload == null)
-            return;
+        if (payload != null) {
+            SkinInfo info = skinManager.getSkinInfo().get(payload.playerUuid());
+            if (info == null) {
+                this.logger.error("Skin info was null!!!");
+                return;
+            }
+            info.setData(payload.skinData(), payload.chunkPosition());
+            this.logger.info("Skin chunk {} received for {}", payload.chunkPosition(), payload.playerUuid());
 
-        SkinInfo info = skinManager.getSkinInfo().get(payload.playerUuid());
-        if (info == null) {
-            this.logger.error("Skin info was null!!!");
-            return;
+            if (info.isComplete()) {
+                // All skin data has been received
+                skinManager.getSkinInfo().remove(payload.playerUuid());
+            } else {
+                return;
+            }
+
+            NativeImage skinImage = toNativeImage(info.getData(), info.getWidth(), info.getHeight());
+
+            PlayerRenderer renderer;
+            Minecraft client = context.client();
+
+            ResourceLocation identifier = ResourceLocation.fromNamespaceAndPath("geyserskinmanager", payload.playerUuid().toString());
+            client.getTextureManager().register(identifier, new DynamicTexture(skinImage));
+
+            boolean isValid = info.getGeometryRaw() != null && !info.getGeometryRaw().isEmpty();
+
+            if (isValid) {
+                // Convert Bedrock JSON geometry into a class format that Java understands
+                BedrockPlayerEntityModel<AbstractClientPlayer> model = GeometryUtil.bedrockGeoToJava(info);
+                if (model != null) {
+                    EntityRendererProvider.Context entityContext = new EntityRendererProvider.Context(client.getEntityRenderDispatcher(),
+                            client.getItemRenderer(), client.getBlockRenderer(), client.getEntityRenderDispatcher().getItemInHandRenderer(),
+                            client.getResourceManager(), client.getEntityModels(), client.font);
+                    renderer = new PlayerRenderer(entityContext, false);
+                    ((PlayerEntityRendererChangeModel) renderer).bedrockskinutility$setModel(model);
+
+                    CustomModelData custom = new CustomModelData(renderer, identifier);
+                    SkinManager.getInstance().getModelData().put(payload.playerUuid(), custom);
+                }
+            }
         }
-        info.setData(payload.skinData(), payload.chunkPosition());
-        this.logger.info("Skin chunk {} received for {}", payload.chunkPosition(), payload.playerUuid());
-
-        if (info.isComplete()) {
-            // All skin data has been received
-            skinManager.getSkinInfo().remove(payload.playerUuid());
-        } else {
-            return;
-        }
-
-        NativeImage skinImage = toNativeImage(info.getData(), info.getWidth(), info.getHeight());
-
-        PlayerRenderer renderer;
-        Minecraft client = context.client();
-
-        ResourceLocation identifier = ResourceLocation.fromNamespaceAndPath("geyserskinmanager", payload.playerUuid().toString());
-        client.getTextureManager().register(identifier, new DynamicTexture(skinImage));
-
-        // Convert Bedrock JSON geometry into a class format that Java understands
-        BedrockPlayerEntityModel<AbstractClientPlayer> model = GeometryUtil.bedrockGeoToJava(info);
-        if (model == null)
-            return;
-
-        EntityRendererProvider.Context entityContext = new EntityRendererProvider.Context(client.getEntityRenderDispatcher(),
-                client.getItemRenderer(), client.getBlockRenderer(), client.getEntityRenderDispatcher().getItemInHandRenderer(),
-                client.getResourceManager(), client.getEntityModels(), client.font);
-        renderer = new PlayerRenderer(entityContext, false);
-        ((PlayerEntityRendererChangeModel) renderer).bedrockskinutility$setModel(model);
-
-        CustomModelData custom = new CustomModelData(renderer, identifier);
-        SkinManager.getInstance().getModelData().put(payload.playerUuid(), custom);
     }
 
     private NativeImage toNativeImage(byte[] data, int width, int height) {
