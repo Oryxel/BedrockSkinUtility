@@ -63,9 +63,6 @@ public final class BedrockMessageHandler {
             PlayerRenderer renderer;
             Minecraft client = context.client();
 
-            ResourceLocation identifier = ResourceLocation.fromNamespaceAndPath("geyserskinmanager", payload.playerUuid().toString());
-            client.getTextureManager().register(identifier, new DynamicTexture(skinImage));
-
             boolean isValid = info.getGeometryRaw() != null && !info.getGeometryRaw().isEmpty();
 
             if (isValid) {
@@ -77,6 +74,9 @@ public final class BedrockMessageHandler {
                             client.getResourceManager(), client.getEntityModels(), client.font);
                     renderer = new PlayerRenderer(entityContext, false);
                     ((PlayerEntityRendererChangeModel) renderer).bedrockskinutility$setModel(model);
+
+                    ResourceLocation identifier = ResourceLocation.fromNamespaceAndPath("geyserskinmanager", payload.playerUuid().toString());
+                    client.getTextureManager().register(identifier, new DynamicTexture(skinImage));
 
                     CustomModelData custom = new CustomModelData(renderer, identifier);
                     SkinManager.getInstance().getModelData().put(payload.playerUuid(), custom);
